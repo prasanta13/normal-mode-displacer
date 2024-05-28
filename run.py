@@ -9,11 +9,11 @@ import os
 ####################################################
 #    The section of parameters required comes here
 ####################################################
-N = 3 #Number of geometries to generate
+N = 20 #Number of geometries to generate
 a = np.linspace(-0.5,0.5,N) #Range of distortion of geometries
-normalmode_file = 'normalmodes.txt'
-equ_xyz = 'equilibrium.xyz' # Equilibrium geometry
-freqcm1 = read_freq('g09/h2o.log') #Read the frequencies
+normalmode_file = 'normalmodes_h2otrimer.txt'
+equ_xyz = 'equilibrium_h2otrimer.xyz' # Equilibrium geometry
+freqcm1 = read_freq(normalmode_file) #Read the frequencies
 output_directory = 'test_xyz/'  # Directory for storing output files
 
 # Only change the above parts
