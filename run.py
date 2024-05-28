@@ -1,5 +1,6 @@
 from rw_xyz import read_xyz,write_xyz
-from displace_coords import displace_coords 
+from Z2m import Z2m
+#from displace_coords import displace_coords 
 from read_frequency import read_freq
 import numpy as np
 import os
@@ -10,16 +11,19 @@ import os
 ####################################################
 N = 3 #Number of geometries to generate
 a = np.linspace(-0.5,0.5,N) #Range of distortion of geometries
-
 normalmode_file = 'normalmodes.txt'
 equ_xyz = 'equilibrium.xyz' # Equilibrium geometry
 freqcm1 = read_freq('g09/h2o.log') #Read the frequencies
+output_directory = 'test_xyz/'  # Directory for storing output files
+
+# Only change the above parts
+# Lower parts are for debugging
+
 print("The frequencies are",freqcm1)
 Modes = [(mode + 1) for mode in range(len(freqcm1))] #selected modes
 print("Modes = ",Modes)
 nmodes = len(Modes)
 print("Total number of modes = ",nmodes)
-output_directory = 'test_xyz/'  # Directory for storing output files
 # Create the output directory if it does not exist
 if not os.path.exists(output_directory):
     os.makedirs(output_directory)
@@ -27,7 +31,6 @@ if not os.path.exists(output_directory):
 #               Parameters end here
 ####################################################
 
-from Z2m import Z2m
 
 def displace_coords(Coords,imode,freqcm1,Factor):
     ##################################################
