@@ -1,21 +1,23 @@
 from rw_xyz import read_xyz,write_xyz
 from displace_coords import displace_coords 
+from read_frequency import read_freq
 import numpy as np
 import os
+
 
 ####################################################
 #    The section of parameters required comes here
 ####################################################
-# Number of geometries to generate
-N = 3
-# Range of distortion of geometries
-a = np.linspace(-0.5,0.5,N)
-# Frequencies(cm-1) of selected modes [to be changed later for more automation]
-freqcm1 = [1722.4496, 3799.4476, 3925.0128] 
-# selected modes
-Modes = [1,2,3]
+equ_xyz = 'equilibrium.xyz' # Equilibrium geometry
+
+N = 3 #Number of geometries to generate
+a = np.linspace(-0.5,0.5,N) #Range of distortion of geometries
+freqcm1 = read_freq('g09/h2o.log') #Read the frequencies
+print("The frequencies are",freqcm1)
+Modes = [(mode + 1) for mode in range(len(freqcm1))] #selected modes
 print("Modes = ",Modes)
 nmodes = len(Modes)
+print("Total number of modes = ",nmodes)
 output_directory = 'test_xyz/'  # Directory for storing output files
 # Create the output directory if it does not exist
 if not os.path.exists(output_directory):
@@ -24,9 +26,10 @@ if not os.path.exists(output_directory):
 #               Parameters end here
 ####################################################
 
-AtomList,R0,comment = read_xyz('equilibrium.xyz')  # read starting coordinates
+AtomList,R0,comment = read_xyz(equ_xyz)  # read starting coordinates
 n_structure_count = 0
 for j in range(N):  # loop N times
+    print("-"*15)
     print('Step j =' + str(j+1))
     print("-"*15)
     D = R0  # Starting coordinates
