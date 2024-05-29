@@ -9,7 +9,7 @@ import os
 #    The section of parameters required comes here
 ####################################################
 N = 1 #Number of geometries per normal modes to generate
-a = np.linspace(-1.0,0.0,N) #Range of distortion of geometries
+a = np.linspace(1.0,2.0,N) #Range of distortion of geometries
 normalmode_file = 'normalmodes.txt'
 equ_xyz = 'equilibrium.xyz' # Equilibrium geometry
 freqcm1 = read_freq(normalmode_file) #Read the frequencies
@@ -45,9 +45,12 @@ def displace_coords(Coords,imode,freqcm1,Factor):
     Nat=len(Coords)/3				# Number of atoms 
     Displc=read_displacements(Nat,imode)		# Read normal mode displacements (vector of length 3*Nat)
     mi = Z2m(equ_xyz)
+    print("mi",mi,"Nat",Nat)
     D=[]
     for i in range( 3 * int(Nat) ):			# Loop over coordinates
-        mass = mi[ int( (i - 1) / 3 ) ]  # int rounds down by default
+        #mass = mi[ int( (i - 1) / 3 ) ]  # int rounds down by default. This was original. For water molecule, it was showing four 15.9994 instead 
+        #of three, and five 1.0079 instead of six. So I changed it to below line.
+        mass = mi[i//3]
         displacement_constant = (mass**.5 * 0.172*freqcm1**.5)**-1
         print("Displacement constant = ",displacement_constant,"Mass",mass, "freqcm-1",freqcm1,"i =",i)
         #extra_factor = 1e5*freqcm1**-3
@@ -64,7 +67,8 @@ def read_displacements(Nat,imode):
     # Inputs: 	Nat (int), total number of atoms
     #		imode (int), the displacements are taken from mode number 'imode'
     # Outputs:	D (float list), single column of displacement coordinates (length 3*Nat)
-    ##################################################
+    ################################################## 
+    # WORKS OK
     # Definitions
     N_coord = 3*Nat  # Number of coordinates
     # Error checks
@@ -79,7 +83,7 @@ def read_displacements(Nat,imode):
  
     if imode>=1 and imode<=Nmode:
         pass
-        #print "Reading displacements for mode " + str(imode)
+        #print("Reading displacements for mode " + str(imode))
     else:
         print('ERROR: imode out of range (1,Nmode).')
         return
@@ -88,9 +92,7 @@ def read_displacements(Nat,imode):
     a = (row+1)*7 + row*N_coord
     b = (row+1)*(7 + N_coord)
     d = row*5
-    # print("a = ",a)
-    # print("b = ",b)
-    # print("d = ",d)
+    #print("Row = ",row, "a =",a, "b = ",b,"d = ",d)
     # Append displacements from file to column vector 'Displc'
     c=0
     Displc=[]
@@ -99,8 +101,8 @@ def read_displacements(Nat,imode):
             c+=1
             if c>a and c<=b:
                 Displc.append(float(line.split()[imode+2-d]))
+                #print("Displc",Displc)
     ##################################################
-    #print("Displc",Displc)
     return Displc
 
 
